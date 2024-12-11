@@ -43,17 +43,16 @@ const HomeScreen: React.FC = () => {
                                dark:from-cyan-500/5 dark:to-blue-500/5 blur-3xl" />
             </div>
 
-            <div className="relative max-w-7xl mx-auto px-4 py-8">
-                <header className="flex items-center justify-between mb-16">
+            <div className="relative max-w-lg mx-auto px-4 py-8 md:max-w-2xl lg:max-w-4xl">
+                <header className="flex items-center justify-between mb-12">
                     <div className="flex flex-col">
-                        <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r 
+                        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r 
                                      from-primary via-blue-600 to-blue-500">
                             iFrame OS
                         </h1>
-                        <p className="mt-2 text-secondary-dark/60 dark:text-gray-400">
+                        <p className="mt-2 text-sm text-secondary-dark/60 dark:text-gray-400">
                             {new Date().toLocaleDateString(undefined, {
                                 weekday: 'long',
-                                year: 'numeric',
                                 month: 'long',
                                 day: 'numeric'
                             })}
@@ -61,25 +60,23 @@ const HomeScreen: React.FC = () => {
                     </div>
                 </header>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <div className="grid grid-cols-4 gap-x-4 gap-y-6 md:gap-6 lg:grid-cols-5">
                     {defaultApps.map((app, index) => (
                         <button
                             key={index}
                             onClick={() => handleAppClick(app.url)}
-                            className="group relative flex flex-col items-center p-6 rounded-2xl
-                                     bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl
-                                     hover:bg-white dark:hover:bg-slate-800
-                                     shadow-sm hover:shadow-xl
-                                     transform hover:scale-105 hover:-translate-y-1
-                                     transition-all duration-300 ease-out"
+                            className="group relative flex flex-col items-center p-2
+                                     hover:scale-105 transition-all duration-300 ease-out"
                         >
                             <LogoIcon
                                 url={app.url}
                                 name={app.name}
-                                className="w-16 h-16 mb-4 shadow-lg group-hover:shadow-xl transition-shadow"
+                                className="w-14 h-14 md:w-16 md:h-16 mb-2 shadow-lg group-hover:shadow-xl 
+                                         transition-all duration-300"
                             />
-                            <span className="text-sm font-medium text-secondary-dark/80 dark:text-gray-300
-                                           group-hover:text-secondary-dark dark:group-hover:text-white">
+                            <span className="text-xs md:text-sm font-medium text-secondary-dark/80 
+                                           dark:text-gray-300 group-hover:text-secondary-dark 
+                                           dark:group-hover:text-white text-center max-w-full truncate px-1">
                                 {app.name}
                             </span>
                         </button>
@@ -90,8 +87,8 @@ const HomeScreen: React.FC = () => {
             {/* Modal Overlay */}
             {(selectedApp || showSettings) && (
                 <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-40 animate-fade-in">
-                    <div className="fixed inset-4 md:inset-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl
-                                  rounded-3xl shadow-2xl overflow-hidden z-50 animate-slide-up">
+                    <div className="fixed inset-4 md:inset-12 lg:inset-16 bg-white/90 dark:bg-slate-900/90 
+                                  backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden z-50 animate-slide-up">
                         {selectedApp && <AppIframe url={selectedApp} onClose={handleCloseIframe} />}
                         {showSettings && <Settings onClose={handleCloseIframe} />}
                     </div>
