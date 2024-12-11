@@ -23,9 +23,6 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
     const [userName, setUserName] = useState('');
     const { darkMode, toggleDarkMode } = useTheme();
     const [activeTab, setActiveTab] = useState('apps'); // ['apps', 'appearance', 'system']
-    const [serviceName, setServiceName] = useState('');
-    const [serviceIP, setServiceIP] = useState('');
-    const [servicePort, setServicePort] = useState('');
 
     useEffect(() => {
         const settings = loadSettings();
@@ -46,29 +43,6 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
         setAppURL('');
     };
 
-    const handleAddLocalService = () => {
-        if (!serviceName || !serviceIP) return;
-
-        const url = servicePort
-            ? `${serviceIP}:${servicePort}`
-            : serviceIP;
-
-        const newApp = {
-            name: serviceName,
-            url: url,
-            isEditing: false
-        };
-
-        const updatedApps: EditingApp[] = [...apps, newApp];
-        setApps(updatedApps);
-        saveApps(updatedApps.map(({ isEditing: _, ...app }) => app));
-
-        // Reset form
-        setServiceName('');
-        setServiceIP('');
-        setServicePort('');
-    };
-
     const handleSaveUserName = () => {
         const settings = loadSettings();
         saveSettings({ ...settings, userName });
@@ -83,8 +57,22 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
     const handleEditApp = (index: number) => {
         setApps(prev => prev.map((app, i) => ({
             ...app,
-            isEditing: i === index ? !app.isEditing : false
+            isEditing: i === index ? !app.isEditing : app.isEditing
         })));
+    };
+
+    const handleSaveApp = (index: number) => {
+        const newApps = apps.map((app, i) => {
+            if (i === index) {
+                return {
+                    ...app,
+                    isEditing: false
+                };
+            }
+            return app;
+        });
+        setApps(newApps);
+        saveApps(newApps.map(({ isEditing: _, ...app }) => app));
     };
 
     const handleUpdateApp = (index: number, updatedApp: Partial<App>) => {
@@ -92,14 +80,12 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
             if (i === index) {
                 return {
                     ...app,
-                    ...updatedApp,
-                    isEditing: false
+                    ...updatedApp
                 };
             }
             return app;
         });
         setApps(newApps);
-        saveApps(newApps);
     };
 
     const TabButton: React.FC<{ name: string; icon: React.ReactNode; active: boolean; onClick: () => void }> = ({ name, icon, active, onClick }) => (
@@ -187,47 +173,6 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                         </div>
 
                         <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
-                            <h3 className="text-base font-semibold mb-3">Add Local Service</h3>
-                            <div className="space-y-3">
-                                <input
-                                    type="text"
-                                    placeholder="Service Name (e.g., Home Assistant)"
-                                    value={serviceName}
-                                    onChange={(e) => setServiceName(e.target.value)}
-                                    className="w-full px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-600 
-                                             dark:bg-slate-700 focus:ring-2 focus:ring-primary focus:border-transparent"
-                                />
-                                <div className="flex gap-2">
-                                    <input
-                                        type="text"
-                                        placeholder="IP Address (e.g., 192.168.1.100)"
-                                        value={serviceIP}
-                                        onChange={(e) => setServiceIP(e.target.value)}
-                                        className="flex-1 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-600 
-                                                 dark:bg-slate-700 focus:ring-2 focus:ring-primary focus:border-transparent"
-                                        pattern="^(\d{1,3}\.){3}\d{1,3}$"
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Port"
-                                        value={servicePort}
-                                        onChange={(e) => setServicePort(e.target.value)}
-                                        className="w-20 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-600 
-                                                 dark:bg-slate-700 focus:ring-2 focus:ring-primary focus:border-transparent"
-                                        pattern="^\d+$"
-                                    />
-                                </div>
-                                <button
-                                    onClick={handleAddLocalService}
-                                    className="w-full px-3 py-1.5 bg-primary hover:bg-primary-dark text-white rounded-lg 
-                                             transition-colors duration-200"
-                                >
-                                    Add Local Service
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
                             <h3 className="text-base font-semibold mb-3">Installed Apps</h3>
                             <div className="space-y-1">
                                 {apps.map((app, index) => (
@@ -250,7 +195,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                                                     className="flex-1 px-2 py-1 rounded border dark:bg-slate-700"
                                                 />
                                                 <button
-                                                    onClick={() => handleEditApp(index)}
+                                                    onClick={() => handleSaveApp(index)}
                                                     className="p-1.5 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 
                                                              rounded-lg transition-colors"
                                                 >
