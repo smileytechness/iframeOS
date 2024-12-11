@@ -30,7 +30,7 @@ export const loadApps = (): App[] => {
     if (apps) {
         return JSON.parse(apps);
     } else {
-        // Add a default app if none exist
+        // Add default apps
         const defaultApps: App[] = [
             { name: 'Snapdrop', url: 'https://snapdrop.net' }
         ];

@@ -4,20 +4,25 @@ import Settings from './Settings';
 import LogoIcon from './LogoIcon';
 import { loadApps } from '../utils/localStorage';
 import { App } from '../types/app';
+import { Console } from './Console';
 
-const HomeScreen: React.FC = () => {
+export const HomeScreen: React.FC = () => {
     const [selectedApp, setSelectedApp] = useState<string | null>(null);
     const [showSettings, setShowSettings] = useState(false);
+    const [showConsole, setShowConsole] = useState(false);
     const apps = loadApps();
 
     const defaultApps: App[] = [
         { name: 'Settings', url: 'settings' },
+        { name: 'Console', url: 'console' },
         ...apps
     ];
 
     const handleAppClick = (url: string) => {
         if (url === 'settings') {
             setShowSettings(true);
+        } else if (url === 'console') {
+            setShowConsole(true);
         } else {
             setSelectedApp(url);
         }
@@ -26,6 +31,7 @@ const HomeScreen: React.FC = () => {
     const handleCloseIframe = () => {
         setSelectedApp(null);
         setShowSettings(false);
+        setShowConsole(false);
     };
 
     return (
@@ -81,12 +87,13 @@ const HomeScreen: React.FC = () => {
             </div>
 
             {/* Modal Overlay */}
-            {(selectedApp || showSettings) && (
+            {(selectedApp || showSettings || showConsole) && (
                 <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-40 animate-fade-in">
                     <div className="fixed inset-4 md:inset-12 lg:inset-16 bg-white/90 dark:bg-slate-900/90 
                                   backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden z-50 animate-slide-up">
                         {selectedApp && <AppIframe url={selectedApp} onClose={handleCloseIframe} />}
                         {showSettings && <Settings onClose={handleCloseIframe} />}
+                        {showConsole && <Console onClose={handleCloseIframe} />}
                     </div>
                 </div>
             )}
