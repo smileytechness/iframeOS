@@ -2,13 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { saveSettings, loadSettings, saveApps, loadApps, getLocalStorageSize } from '../utils/localStorage';
 import { useTheme } from '../context/ThemeContext';
 import { App } from '../types/app';
+import { FiEdit2, FiTrash2, FiSave } from 'react-icons/fi';
+import { BiPaintRoll } from 'react-icons/bi';
+import { IoSettingsSharp, IoApps } from 'react-icons/io5';
 
 interface SettingsProps {
     onClose: () => void;
 }
 
+interface EditingApp extends App {
+    isEditing: boolean;
+}
+
 const Settings: React.FC<SettingsProps> = ({ onClose }) => {
-    const [apps, setApps] = useState<App[]>(loadApps());
+    const [apps, setApps] = useState<EditingApp[]>(
+        loadApps().map(app => ({ ...app, isEditing: false }))
+    );
     const [appName, setAppName] = useState('');
     const [appURL, setAppURL] = useState('');
     const [userName, setUserName] = useState('');
@@ -25,10 +34,14 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
 
     const handleAddApp = () => {
         if (!appName || !appURL) return;
-        const newApp = { name: appName, url: appURL };
-        const updatedApps = [...apps, newApp];
+        const newApp = {
+            name: appName,
+            url: appURL,
+            isEditing: false
+        };
+        const updatedApps: EditingApp[] = [...apps, newApp];
         setApps(updatedApps);
-        saveApps(updatedApps);
+        saveApps(updatedApps.map(({ isEditing: _, ...app }) => app));
         setAppName('');
         setAppURL('');
     };
@@ -42,12 +55,13 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
 
         const newApp = {
             name: serviceName,
-            url: url
+            url: url,
+            isEditing: false
         };
 
-        const updatedApps = [...apps, newApp];
+        const updatedApps: EditingApp[] = [...apps, newApp];
         setApps(updatedApps);
-        saveApps(updatedApps);
+        saveApps(updatedApps.map(({ isEditing: _, ...app }) => app));
 
         // Reset form
         setServiceName('');
@@ -66,7 +80,29 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
         saveApps(updatedApps);
     };
 
-    const TabButton: React.FC<{ name: string; active: boolean; onClick: () => void }> = ({ name, active, onClick }) => (
+    const handleEditApp = (index: number) => {
+        setApps(prev => prev.map((app, i) => ({
+            ...app,
+            isEditing: i === index ? !app.isEditing : false
+        })));
+    };
+
+    const handleUpdateApp = (index: number, updatedApp: Partial<App>) => {
+        const newApps = apps.map((app, i) => {
+            if (i === index) {
+                return {
+                    ...app,
+                    ...updatedApp,
+                    isEditing: false
+                };
+            }
+            return app;
+        });
+        setApps(newApps);
+        saveApps(newApps);
+    };
+
+    const TabButton: React.FC<{ name: string; icon: React.ReactNode; active: boolean; onClick: () => void }> = ({ name, icon, active, onClick }) => (
         <button
             onClick={onClick}
             className={`px-4 py-2 rounded-lg font-medium transition-all duration-200
@@ -74,6 +110,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                     ? 'bg-primary text-white shadow-md'
                     : 'text-secondary-dark dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700'}`}
         >
+            {icon}
             {name}
         </button>
     );
@@ -96,9 +133,24 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
 
             <div className="p-3 border-b border-gray-200 dark:border-slate-700">
                 <div className="flex space-x-2">
-                    <TabButton name="Apps" active={activeTab === 'apps'} onClick={() => setActiveTab('apps')} />
-                    <TabButton name="Appearance" active={activeTab === 'appearance'} onClick={() => setActiveTab('appearance')} />
-                    <TabButton name="System" active={activeTab === 'system'} onClick={() => setActiveTab('system')} />
+                    <TabButton
+                        name="Apps"
+                        icon={<IoApps className="w-4 h-4" />}
+                        active={activeTab === 'apps'}
+                        onClick={() => setActiveTab('apps')}
+                    />
+                    <TabButton
+                        name="Appearance"
+                        icon={<BiPaintRoll className="w-4 h-4" />}
+                        active={activeTab === 'appearance'}
+                        onClick={() => setActiveTab('appearance')}
+                    />
+                    <TabButton
+                        name="System"
+                        icon={<IoSettingsSharp className="w-4 h-4" />}
+                        active={activeTab === 'system'}
+                        onClick={() => setActiveTab('system')}
+                    />
                 </div>
             </div>
 
@@ -178,25 +230,57 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                         <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
                             <h3 className="text-base font-semibold mb-3">Installed Apps</h3>
                             <div className="space-y-1">
-                                {apps.map((app: App, index: number) => (
+                                {apps.map((app, index) => (
                                     <div key={index}
                                         className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 
                                                  dark:hover:bg-slate-700 transition-colors"
                                     >
-                                        <div>
-                                            <h4 className="font-medium text-sm">{app.name}</h4>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400">{app.url}</p>
-                                        </div>
-                                        <button
-                                            onClick={() => handleDeleteApp(index)}
-                                            className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 
-                                                     rounded-lg transition-colors"
-                                        >
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
+                                        {app.isEditing ? (
+                                            <div className="flex-1 flex items-center gap-2">
+                                                <input
+                                                    type="text"
+                                                    value={app.name}
+                                                    onChange={(e) => handleUpdateApp(index, { name: e.target.value })}
+                                                    className="flex-1 px-2 py-1 rounded border dark:bg-slate-700"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    value={app.url}
+                                                    onChange={(e) => handleUpdateApp(index, { url: e.target.value })}
+                                                    className="flex-1 px-2 py-1 rounded border dark:bg-slate-700"
+                                                />
+                                                <button
+                                                    onClick={() => handleEditApp(index)}
+                                                    className="p-1.5 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 
+                                                             rounded-lg transition-colors"
+                                                >
+                                                    <FiSave className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div>
+                                                    <h4 className="font-medium text-sm">{app.name}</h4>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400">{app.url}</p>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <button
+                                                        onClick={() => handleEditApp(index)}
+                                                        className="p-1.5 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 
+                                                                 wrapped-lg transition-colors"
+                                                    >
+                                                        <FiEdit2 className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteApp(index)}
+                                                        className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 
+                                                                 wrapped-lg transition-colors"
+                                                    >
+                                                        <FiTrash2 className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                 ))}
                             </div>

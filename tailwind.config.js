@@ -9,16 +9,29 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#2563eb',
-          dark: '#1d4ed8',
+          DEFAULT: '#3B82F6',
+          dark: '#2563EB',
+          light: '#60A5FA',
         },
-        secondary: {
-          DEFAULT: '#475569',
-          dark: '#334155',
+        neutral: {
+          50: '#F8FAFC',
+          100: '#F1F5F9',
+          200: '#E2E8F0',
+          300: '#CBD5E1',
+          400: '#94A3B8',
+          500: '#64748B',
+          600: '#475569',
+          700: '#334155',
+          800: '#1E293B',
+          900: '#0F172A',
+        },
+        surface: {
+          light: 'rgba(255, 255, 255, 0.8)',
+          dark: 'rgba(30, 41, 59, 0.8)',
         },
         background: {
-          light: '#f8fafc',
-          dark: '#0f172a',
+          light: '#FFFFFF',
+          dark: '#0F172A',
         },
       },
       animation: {
@@ -35,9 +48,6 @@ export default {
           '100%': { opacity: '1' },
         }
       },
-      backdropBlur: {
-        xs: '2px',
-      }
     },
   },
   plugins: [],

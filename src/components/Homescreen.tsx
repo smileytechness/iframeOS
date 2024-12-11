@@ -35,24 +35,20 @@ export const HomeScreen: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-background-light via-blue-50/50 to-purple-50/50 
-                        dark:from-background-dark dark:via-slate-900 dark:to-slate-800 transition-all duration-300">
+        <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 transition-all duration-300">
             {/* Decorative background elements */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-blue-500/10 to-purple-500/10 
-                               dark:from-blue-500/5 dark:to-purple-500/5 blur-3xl" />
-                <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-br from-cyan-500/10 to-blue-500/10 
-                               dark:from-cyan-500/5 dark:to-blue-500/5 blur-3xl" />
+                <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br 
+                               from-primary/5 to-neutral-200 dark:from-primary/10 dark:to-transparent blur-3xl" />
             </div>
 
             <div className="relative max-w-lg mx-auto px-4 py-8 md:max-w-2xl lg:max-w-4xl">
                 <header className="flex items-center justify-between mb-12">
                     <div className="flex flex-col">
-                        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r 
-                                     from-primary via-blue-600 to-blue-500">
+                        <h1 className="text-4xl font-bold text-neutral-900 dark:text-white">
                             iFrame OS
                         </h1>
-                        <p className="mt-2 text-sm text-secondary-dark/60 dark:text-gray-400">
+                        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
                             {new Date().toLocaleDateString(undefined, {
                                 weekday: 'long',
                                 month: 'long',
@@ -76,8 +72,8 @@ export const HomeScreen: React.FC = () => {
                                 className="w-14 h-14 md:w-16 md:h-16 mb-2 shadow-lg group-hover:shadow-xl 
                                          transition-all duration-300"
                             />
-                            <span className="text-xs md:text-sm font-medium text-secondary-dark/80 
-                                           dark:text-gray-300 group-hover:text-secondary-dark 
+                            <span className="text-xs md:text-sm font-medium text-neutral-600 
+                                           dark:text-neutral-400 group-hover:text-neutral-900 
                                            dark:group-hover:text-white text-center max-w-full truncate px-1">
                                 {app.name}
                             </span>
@@ -89,8 +85,10 @@ export const HomeScreen: React.FC = () => {
             {/* Modal Overlay */}
             {(selectedApp || showSettings || showConsole) && (
                 <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-40 animate-fade-in">
-                    <div className="fixed inset-4 md:inset-12 lg:inset-16 bg-white/90 dark:bg-slate-900/90 
-                                  backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden z-50 animate-slide-up">
+                    <div className={`fixed ${selectedApp ? 'inset-0' : 'inset-4 md:inset-12 lg:inset-16'} 
+                                  bg-surface-light dark:bg-surface-dark backdrop-blur-xl 
+                                  ${selectedApp ? '' : 'rounded-3xl'} 
+                                  shadow-2xl overflow-hidden z-50 animate-slide-up`}>
                         {selectedApp && <AppIframe url={selectedApp} onClose={handleCloseIframe} />}
                         {showSettings && <Settings onClose={handleCloseIframe} />}
                         {showConsole && <Console onClose={handleCloseIframe} />}
