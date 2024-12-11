@@ -1,14 +1,20 @@
 // src/utils/localStorage.ts
 
+// Update the types
+interface Settings {
+    userName?: string;
+    darkMode: boolean;
+}
+
 // Save settings to local storage
-export const saveSettings = (settings: { userName: string; darkMode: boolean }) => {
+export const saveSettings = (settings: Settings) => {
     localStorage.setItem('userSettings', JSON.stringify(settings));
 };
 
 // Load settings from local storage
-export const loadSettings = () => {
+export const loadSettings = (): Settings => {
     const settings = localStorage.getItem('userSettings');
-    return settings ? JSON.parse(settings) : {};
+    return settings ? JSON.parse(settings) : { darkMode: false };
 };
 
 // Save apps to local storage
@@ -41,4 +47,3 @@ export const getLocalStorageSize = () => {
     }
     return total;
 };
-

@@ -7,21 +7,34 @@ interface AppIframeProps {
 
 const AppIframe: React.FC<AppIframeProps> = ({ url, onClose }) => {
     return (
-        <div className="fixed inset-0 bg-white z-50 flex flex-col">
-            {url === 'settings' ? (
-                <div className="p-4 flex-grow">
-                    <h2 className="text-2xl font-bold">Settings</h2>
-                    {/* Render your settings content here */}
-                    <p>This is the settings view.</p>
-                    <button onClick={onClose} className="bg-red-500 text-white p-2 rounded">Close</button>
+        <div className="h-full flex flex-col">
+            <div className="flex-grow relative">
+                <iframe
+                    src={url}
+                    className="w-full h-full"
+                    title="App Content"
+                />
+            </div>
+
+            <div className="bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 p-4
+                          flex items-center justify-between">
+                <button
+                    onClick={onClose}
+                    className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white 
+                             transition-colors duration-200"
+                >
+                    Close
+                </button>
+
+                <div className="flex gap-4">
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="px-4 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white 
+                                 transition-colors duration-200"
+                    >
+                        Refresh
+                    </button>
                 </div>
-            ) : (
-                <iframe src={url} className="flex-grow w-full h-full" title="App Iframe" />
-            )}
-            <div className="flex justify-around p-2 bg-gray-800 text-white">
-                <button onClick={onClose}>Close</button>
-                <button onClick={() => console.log('Go to Home')}>Home</button>
-                <button onClick={() => console.log('Open Settings')}>Settings</button>
             </div>
         </div>
     );
