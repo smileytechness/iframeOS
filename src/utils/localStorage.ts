@@ -1,5 +1,7 @@
 // src/utils/localStorage.ts
 
+import { App } from '../types/app';
+
 // Update the types
 interface Settings {
     userName?: string;
@@ -18,21 +20,21 @@ export const loadSettings = (): Settings => {
 };
 
 // Save apps to local storage
-export const saveApps = (apps: { name: string; url: string }[]) => {
+export const saveApps = (apps: App[]) => {
     localStorage.setItem('userApps', JSON.stringify(apps));
 };
 
 // Load apps from local storage
-export const loadApps = () => {
+export const loadApps = (): App[] => {
     const apps = localStorage.getItem('userApps');
     if (apps) {
         return JSON.parse(apps);
     } else {
         // Add a default app if none exist
-        const defaultApps = [
+        const defaultApps: App[] = [
             { name: 'Snapdrop', url: 'https://snapdrop.net' }
         ];
-        saveApps(defaultApps); // Save default apps to local storage
+        saveApps(defaultApps);
         return defaultApps;
     }
 };
@@ -40,9 +42,9 @@ export const loadApps = () => {
 // Get the size of local storage in bytes
 export const getLocalStorageSize = () => {
     let total = 0;
-    for (let x in localStorage) {
-        if (localStorage.hasOwnProperty(x)) {
-            total += (localStorage[x].length + x.length) * 2; // Approximate size in bytes
+    for (const key of Object.keys(localStorage)) {
+        if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
+            total += (localStorage[key].length + key.length) * 2;
         }
     }
     return total;

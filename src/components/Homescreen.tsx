@@ -3,18 +3,14 @@ import AppIframe from './AppIframe';
 import Settings from './Settings';
 import LogoIcon from './LogoIcon';
 import { loadApps } from '../utils/localStorage';
-
-interface App {
-    name: string;
-    url: string;
-}
+import { App } from '../types/app';
 
 const HomeScreen: React.FC = () => {
     const [selectedApp, setSelectedApp] = useState<string | null>(null);
     const [showSettings, setShowSettings] = useState(false);
     const apps = loadApps();
 
-    const defaultApps = [
+    const defaultApps: App[] = [
         { name: 'Settings', url: 'settings' },
         ...apps
     ];

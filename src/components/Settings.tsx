@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { saveSettings, loadSettings, saveApps, loadApps, getLocalStorageSize } from '../utils/localStorage';
 import { useTheme } from '../context/ThemeContext';
+import { App } from '../types/app';
 
 interface SettingsProps {
     onClose: () => void;
 }
 
-interface LocalService {
-    name: string;
-    ip: string;
-    port?: string;
-}
-
 const Settings: React.FC<SettingsProps> = ({ onClose }) => {
-    const [apps, setApps] = useState(loadApps());
+    const [apps, setApps] = useState<App[]>(loadApps());
     const [appName, setAppName] = useState('');
     const [appURL, setAppURL] = useState('');
     const [userName, setUserName] = useState('');
@@ -66,7 +61,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
     };
 
     const handleDeleteApp = (index: number) => {
-        const updatedApps = apps.filter((_, i) => i !== index);
+        const updatedApps = apps.filter((_: App, i: number) => i !== index);
         setApps(updatedApps);
         saveApps(updatedApps);
     };
@@ -183,7 +178,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                         <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
                             <h3 className="text-base font-semibold mb-3">Installed Apps</h3>
                             <div className="space-y-1">
-                                {apps.map((app, index) => (
+                                {apps.map((app: App, index: number) => (
                                     <div key={index}
                                         className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 
                                                  dark:hover:bg-slate-700 transition-colors"
