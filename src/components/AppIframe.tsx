@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatUrl } from '../utils/urlUtils';
 
 interface AppIframeProps {
     url: string;
@@ -6,11 +7,13 @@ interface AppIframeProps {
 }
 
 const AppIframe: React.FC<AppIframeProps> = ({ url, onClose }) => {
+    const formattedUrl = formatUrl(url);
+
     return (
         <div className="h-full flex flex-col">
             <div className="flex-grow relative">
                 <iframe
-                    src={url}
+                    src={formattedUrl}
                     className="w-full h-full"
                     title="App Content"
                 />
