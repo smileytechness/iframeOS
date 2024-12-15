@@ -45,6 +45,10 @@ settingsBtn.style.cssText = `
     color: white;
     cursor: pointer;
     font-size: 20px;
+    transition: transform 0.2s;
+    &:hover {
+        transform: rotate(45deg);
+    }
 `;
 
 const minimizeBtn = document.createElement('button');
@@ -99,12 +103,16 @@ sendButton.style.cssText = `
     padding: 10px 15px;
     border-radius: 50%;
     cursor: pointer;
+    transition: background-color 0.2s;
+    &:hover {
+        background: #064940;
+    }
 `;
 
 inputArea.appendChild(textInput);
 inputArea.appendChild(sendButton);
 
-// Create settings panel
+// Create settings panel with modern UI
 const settingsPanel = document.createElement('div');
 settingsPanel.style.cssText = `
     position: absolute;
@@ -112,57 +120,193 @@ settingsPanel.style.cssText = `
     right: -300px;
     width: 300px;
     height: 100%;
-    background-color: white;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-    transition: right 0.3s;
-    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: -2px 0 15px rgba(0,0,0,0.15);
+    transition: right 0.3s ease;
+    padding: 25px;
     overflow-y: auto;
 `;
 
-// Settings form with additional parameters
+// Settings form with modern UI design
 const settingsForm = document.createElement('form');
 settingsForm.innerHTML = `
-    <h3>API Settings</h3>
-    <div style="margin-bottom: 15px;">
-        <label>Server URL:</label>
-        <input type="text" id="serverUrl" value="http://172.16.101.133:11434/v1/chat/completions" style="width: 100%;">
+    <h3 style="
+        color: #075e54;
+        font-size: 1.5em;
+        margin-bottom: 25px;
+        border-bottom: 2px solid #075e54;
+        padding-bottom: 10px;
+    ">API Settings</h3>
+    
+    <div style="margin-bottom: 20px;">
+        <label style="
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        ">Server URL</label>
+        <input type="text" id="serverUrl" value="http://172.16.101.133:11434/v1/chat/completions" style="
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            &:focus {
+                border-color: #075e54;
+                outline: none;
+            }
+        ">
     </div>
-    <div style="margin-bottom: 15px;">
-        <label>Model:</label>
-        <input type="text" id="model" value="qwen2.5" style="width: 100%;">
+
+    <div style="margin-bottom: 20px;">
+        <label style="
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        ">Model</label>
+        <input type="text" id="model" value="qwen2.5" style="
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            &:focus {
+                border-color: #075e54;
+                outline: none;
+            }
+        ">
     </div>
-    <div style="margin-bottom: 15px;">
-        <label>Temperature:</label>
-        <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7">
-        <span id="temperatureValue">0.7</span>
+
+    <div style="margin-bottom: 20px;">
+        <label style="
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        ">Temperature</label>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7" style="
+                flex: 1;
+                accent-color: #075e54;
+            ">
+            <span id="temperatureValue" style="
+                min-width: 40px;
+                text-align: center;
+                padding: 4px 8px;
+                background: #f0f0f0;
+                border-radius: 4px;
+                font-size: 14px;
+            ">0.7</span>
+        </div>
     </div>
-    <div style="margin-bottom: 15px;">
-        <label>Max Tokens:</label>
-        <input type="number" id="maxTokens" value="150" style="width: 100%;">
+
+    <div style="margin-bottom: 20px;">
+        <label style="
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        ">Max Tokens</label>
+        <input type="number" id="maxTokens" value="150" style="
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            &:focus {
+                border-color: #075e54;
+                outline: none;
+            }
+        ">
     </div>
-    <div style="margin-bottom: 15px;">
-        <label>Top P:</label>
-        <input type="range" id="topP" min="0" max="1" step="0.1" value="0.9">
-        <span id="topPValue">0.9</span>
+
+    <div style="margin-bottom: 20px;">
+        <label style="
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        ">Top P</label>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="range" id="topP" min="0" max="1" step="0.1" value="0.9" style="
+                flex: 1;
+                accent-color: #075e54;
+            ">
+            <span id="topPValue" style="
+                min-width: 40px;
+                text-align: center;
+                padding: 4px 8px;
+                background: #f0f0f0;
+                border-radius: 4px;
+                font-size: 14px;
+            ">0.9</span>
+        </div>
     </div>
-    <div style="margin-bottom: 15px;">
-        <label>Frequency Penalty:</label>
-        <input type="range" id="freqPenalty" min="-2" max="2" step="0.1" value="0">
-        <span id="freqPenaltyValue">0</span>
+
+    <div style="margin-bottom: 20px;">
+        <label style="
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        ">Frequency Penalty</label>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="range" id="freqPenalty" min="-2" max="2" step="0.1" value="0" style="
+                flex: 1;
+                accent-color: #075e54;
+            ">
+            <span id="freqPenaltyValue" style="
+                min-width: 40px;
+                text-align: center;
+                padding: 4px 8px;
+                background: #f0f0f0;
+                border-radius: 4px;
+                font-size: 14px;
+            ">0</span>
+        </div>
     </div>
-    <div style="margin-bottom: 15px;">
-        <label>Presence Penalty:</label>
-        <input type="range" id="presPenalty" min="-2" max="2" step="0.1" value="0">
-        <span id="presPenaltyValue">0</span>
+
+    <div style="margin-bottom: 25px;">
+        <label style="
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        ">Presence Penalty</label>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="range" id="presPenalty" min="-2" max="2" step="0.1" value="0" style="
+                flex: 1;
+                accent-color: #075e54;
+            ">
+            <span id="presPenaltyValue" style="
+                min-width: 40px;
+                text-align: center;
+                padding: 4px 8px;
+                background: #f0f0f0;
+                border-radius: 4px;
+                font-size: 14px;
+            ">0</span>
+        </div>
     </div>
+
     <button type="button" id="closeSettings" style="
         background: #075e54;
         color: white;
         border: none;
-        padding: 8px 15px;
-        border-radius: 5px;
+        padding: 12px;
+        border-radius: 8px;
         cursor: pointer;
         width: 100%;
+        font-size: 16px;
+        font-weight: 500;
+        transition: background-color 0.2s;
+        &:hover {
+            background: #064940;
+        }
     ">Close Settings</button>
 `;
 
