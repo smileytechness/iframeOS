@@ -5,16 +5,19 @@ import LogoIcon from './LogoIcon';
 import { loadApps } from '../utils/localStorage';
 import { App } from '../types/app';
 import { Console } from './Console';
+import OllamaChat from './OllamaChat';
 
 export const HomeScreen: React.FC = () => {
     const [selectedApp, setSelectedApp] = useState<string | null>(null);
     const [showSettings, setShowSettings] = useState(false);
     const [showConsole, setShowConsole] = useState(false);
+    const [showOllamaChat, setShowOllamaChat] = useState(false);
     const apps = loadApps();
 
     const defaultApps: App[] = [
         { name: 'Settings', url: 'settings' },
         { name: 'Console', url: 'console' },
+        { name: 'AI Chat', url: 'ollama-chat' },
         ...apps
     ];
 
@@ -23,6 +26,8 @@ export const HomeScreen: React.FC = () => {
             setShowSettings(true);
         } else if (url === 'console') {
             setShowConsole(true);
+        } else if (url === 'ollama-chat') {
+            setShowOllamaChat(true);
         } else {
             setSelectedApp(url);
         }
@@ -32,6 +37,7 @@ export const HomeScreen: React.FC = () => {
         setSelectedApp(null);
         setShowSettings(false);
         setShowConsole(false);
+        setShowOllamaChat(false);
     };
 
     return (
@@ -83,7 +89,7 @@ export const HomeScreen: React.FC = () => {
             </div>
 
             {/* Modal Overlay */}
-            {(selectedApp || showSettings || showConsole) && (
+            {(selectedApp || showSettings || showConsole || showOllamaChat) && (
                 <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-40 animate-fade-in">
                     <div className={`fixed ${selectedApp ? 'inset-0' : 'inset-4 md:inset-12 lg:inset-16'} 
                                   bg-surface-light dark:bg-surface-dark backdrop-blur-xl 
@@ -92,6 +98,7 @@ export const HomeScreen: React.FC = () => {
                         {selectedApp && <AppIframe url={selectedApp} onClose={handleCloseIframe} />}
                         {showSettings && <Settings onClose={handleCloseIframe} />}
                         {showConsole && <Console onClose={handleCloseIframe} />}
+                        {showOllamaChat && <OllamaChat onClose={handleCloseIframe} />}
                     </div>
                 </div>
             )}
