@@ -8,7 +8,7 @@ interface SavedConfigsProps {
     onLoadConfig: (config: SavedConfig) => void;
 }
 
-const SavedConfigs: React.FC<SavedConfigsProps> = ({ currentSettings, onLoadConfig }) => {
+const SavedConfigs: React.FC<SavedConfigsProps> = ({ onLoadConfig }) => {
     const [configs, setConfigs] = useState<SavedConfig[]>([]);
 
     useEffect(() => {

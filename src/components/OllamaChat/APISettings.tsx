@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { IoInformationCircleOutline, IoCheckmarkCircle, IoCloseCircle, IoChevronBack, IoChevronForward, IoSettingsSharp, IoClose } from 'react-icons/io5';
-import { APISettings, URLParts, ServerStatus, parameterDescriptions } from '../../types/api';
+import { IoInformationCircleOutline, IoClose } from 'react-icons/io5';
+import { APISettings, URLParts, parameterDescriptions } from '../../types/api';
 import { Tooltip } from '../ui/Tooltip';
 import SavedConfigs from './SavedConfigs';
 
@@ -11,8 +11,16 @@ interface APISettingsPanelProps {
     onExpandedChange: (expanded: boolean) => void;
 }
 
-const APISettingsPanel: React.FC<APISettingsPanelProps> = ({ 
-    settings, 
+interface LocalServerStatus {
+    http: string;
+    cors: string;
+    lan: string;
+    lastChecked?: Date;
+    errors?: { type: string; message: string; details?: string }[];
+}
+
+const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
+    settings,
     onSettingsChange,
     isExpanded,
     onExpandedChange
@@ -37,7 +45,7 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
         }
     });
 
-    const [status, setStatus] = useState<ServerStatus>({
+    const [status, setStatus] = useState<LocalServerStatus>({
         http: 'unchecked',
         cors: 'unchecked',
         lan: 'unchecked'
@@ -51,11 +59,11 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
         return `${protocol}://${host}:${port}/${path.v1}/${path.chat}/${path.completions}`;
     };
 
-    const validateIPAddress = (ip: string) => {
-        const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
-        if (!ipRegex.test(ip)) return false;
-        return ip.split('.').every(num => parseInt(num) >= 0 && parseInt(num) <= 255);
-    };
+    // const validateIPAddress = (ip: string) => {
+    //     const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+    //     if (!ipRegex.test(ip)) return false;
+    //     return ip.split('.').every(num => parseInt(num) >= 0 && parseInt(num) <= 255);
+    // };
 
     const checkServerStatus = async () => {
         setIsChecking(true);
@@ -73,7 +81,7 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
             });
 
             // Update status based on response
-            const newStatus: ServerStatus = {
+            const newStatus: LocalServerStatus = {
                 http: 'success',
                 cors: 'success',
                 lan: 'success',
@@ -101,7 +109,7 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
         }
     };
 
-    const renderStatusIndicator = (type: keyof ServerStatus) => {
+    const renderStatusIndicator = (type: keyof Omit<LocalServerStatus, 'lastChecked' | 'errors'>) => {
         const statusLabels = {
             http: 'HTTP',
             cors: 'CORS',
@@ -114,7 +122,7 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
             lan: 'Server is responding on the network. Grey means waiting for HTTP status to be green.'
         };
 
-        const getStatusColor = (type: keyof ServerStatus, status: string) => {
+        const getStatusColor = (type: keyof LocalServerStatus, status: string) => {
             // HTTP status
             if (type === 'http') {
                 switch (status) {
@@ -137,7 +145,7 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
             if (type === 'lan') {
                 if (status === 'loading') return 'bg-yellow-500';
                 // Only show green/red if HTTP is success
-                if (status.http !== 'success') return 'bg-gray-400';
+                if (status !== 'success') return 'bg-gray-400';
                 return status === 'success' ? 'bg-green-500' : 'bg-red-500';
             }
             return 'bg-gray-400';
@@ -195,15 +203,15 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
             <div className={`
                 fixed md:relative
                 md:w-80 md:h-full
-                ${isExpanded 
-                    ? 'inset-0 md:inset-auto' 
+                ${isExpanded
+                    ? 'inset-0 md:inset-auto'
                     : 'translate-y-full md:translate-y-0 md:w-0'
                 }
                 z-40 md:z-0
                 transition-all duration-300 ease-in-out
             `}>
                 {/* Mobile Overlay */}
-                <div 
+                <div
                     className={`
                         md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm
                         ${isExpanded ? 'opacity-100' : 'opacity-0 pointer-events-none'}
@@ -346,7 +354,6 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
                                 {renderParameter('presencePenalty', settings.presencePenalty, -2, 2, 0.1)}
                             </div>
                         </section>
-
                         {/* Saved Configurations */}
                         <SavedConfigs
                             currentSettings={settings}

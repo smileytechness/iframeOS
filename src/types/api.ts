@@ -22,7 +22,7 @@ export interface URLParts {
 export interface ServerStatus {
     http: 'success' | 'error' | 'loading' | 'unchecked';
     cors: 'success' | 'error' | 'loading' | 'unchecked';
-    lan: 'success' | 'error' | 'loading' | 'disabled';
+    lan: 'success' | 'error' | 'loading' | 'disabled' | 'unchecked';
     lastChecked?: Date;
     errors?: {
         type: 'http' | 'cors' | 'network';
