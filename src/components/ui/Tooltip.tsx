@@ -82,7 +82,6 @@ export const Tooltip: React.FC<TooltipProps> = ({ content, children }) => {
                                 remarkPlugins={[remarkGfm]}
                                 components={{
                                     code({ node, inline, className, children, ...props }) {
-                                        const match = /language-(\w+)/.exec(className || '');
                                         if (inline) {
                                             return (
                                                 <code className="bg-gray-800 dark:bg-gray-700 px-1 py-0.5 rounded text-xs" {...props}>
@@ -90,7 +89,6 @@ export const Tooltip: React.FC<TooltipProps> = ({ content, children }) => {
                                                 </code>
                                             );
                                         }
-
                                         const code = String(children).replace(/\n$/, '');
                                         return <CodeBlock className={className}>{code}</CodeBlock>;
                                     },

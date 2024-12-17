@@ -47,7 +47,7 @@ export const SavedConfigs: React.FC<SavedConfigsProps> = ({ onLoadConfig }) => {
                             ) : (
                                 <span 
                                     onClick={() => {
-                                        setEditingId(config.id);
+                                        setEditingId(config.id ?? null);
                                         setEditingName(config.name || '');
                                     }}
                                     className="cursor-pointer hover:text-primary"
@@ -72,7 +72,7 @@ export const SavedConfigs: React.FC<SavedConfigsProps> = ({ onLoadConfig }) => {
                             </button>
                             <button
                                 onClick={() => {
-                                    setEditingId(config.id);
+                                    setEditingId(config.id ?? null);
                                     setEditingName(config.name || '');
                                 }}
                                 className="p-1 text-gray-500 hover:text-gray-600"

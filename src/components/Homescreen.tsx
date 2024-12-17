@@ -98,7 +98,10 @@ export const HomeScreen: React.FC = () => {
                         {selectedApp && <AppIframe url={selectedApp} onClose={handleCloseIframe} />}
                         {showSettings && <Settings onClose={handleCloseIframe} />}
                         {showConsole && <Console onClose={handleCloseIframe} />}
-                        {showOllamaChat && <OllamaChat onClose={handleCloseIframe} />}
+                        {showOllamaChat && <OllamaChat 
+                            onClose={handleCloseIframe} 
+                            onMinimize={() => setShowOllamaChat(false)}
+                        />}
                     </div>
                 </div>
             )}
