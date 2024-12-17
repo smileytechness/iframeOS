@@ -1,20 +1,17 @@
-import { SavedConfig, APISettings, URLParts } from '../types/api';
-
+// src/utils/configStorage.ts
 const STORAGE_KEY = 'ollama_saved_configs';
 
-export const loadSavedConfigs = (): SavedConfig[] => {
+export const loadSavedConfigs = (): APISettings[] => {
     const saved = localStorage.getItem(STORAGE_KEY);
     return saved ? JSON.parse(saved) : [];
 };
 
-export const saveConfig = (settings: APISettings, urlParts: URLParts) => {
+export const saveConfig = (settings: APISettings) => {
     const configs = loadSavedConfigs();
-    const newConfig: SavedConfig = {
+    const newConfig = {
+        ...settings,
         id: Date.now().toString(),
-        name: urlParts.host,
-        lastUsed: new Date(),
-        urlParts,
-        ...settings
+        name: settings.name || new URL(settings.serverUrl).hostname
     };
     
     configs.push(newConfig);
@@ -28,13 +25,10 @@ export const deleteConfig = (id: string) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
 };
 
-export const updateConfig = (id: string, updates: Partial<SavedConfig>) => {
+export const updateConfigName = (id: string, newName: string) => {
     const configs = loadSavedConfigs();
-    const index = configs.findIndex(config => config.id === id);
-    if (index !== -1) {
-        configs[index] = { ...configs[index], ...updates, lastUsed: new Date() };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(configs));
-        return configs[index];
-    }
-    return null;
-}; 
+    const updated = configs.map(config => 
+        config.id === id ? {...config, name: newName} : config
+    );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+};
