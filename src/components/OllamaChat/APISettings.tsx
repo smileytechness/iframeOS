@@ -73,7 +73,7 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
 
     // Add new save handler
     const handleSaveConfig = () => {
-        const savedConfig = saveConfig(settings);
+        saveConfig(settings);
         // Could add a toast/notification here to confirm save
     };
 
@@ -99,7 +99,7 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
         try {
             const serverUrl = new URL(settings.serverUrl);
             const pageProtocol = window.location.protocol;
-            
+
             if (pageProtocol === 'https:' && serverUrl.protocol === 'http:') {
                 setStatus(prev => ({
                     ...prev,
@@ -200,7 +200,7 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
                         flex flex-col border-l border-gray-200 dark:border-gray-700`}>
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-lg font-semibold">API Settings</h2>
-                <button 
+                <button
                     onClick={() => onExpandedChange(false)}
                     className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full"
                 >
@@ -408,7 +408,7 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
 
                     {/* Add save configuration button */}
                     <div className="mt-4 border-t pt-4">
-                        <button 
+                        <button
                             onClick={handleSaveConfig}
                             className="w-full px-4 py-2 bg-primary text-white rounded 
                                      hover:bg-primary-dark transition-colors duration-200"

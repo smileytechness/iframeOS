@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkGfm from 'remark-gfm';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface MessageBubbleProps {
     message: {
@@ -15,11 +15,10 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
     return (
         <div className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
             <div
-                className={`max-w-[80%] p-3 rounded-lg overflow-hidden ${
-                    message.isUser
-                        ? 'bg-primary text-white'
-                        : 'bg-gray-100 dark:bg-gray-800'
-                }`}
+                className={`max-w-[80%] p-3 rounded-lg overflow-hidden ${message.isUser
+                    ? 'bg-primary text-white'
+                    : 'bg-gray-100 dark:bg-gray-800'
+                    }`}
             >
                 {message.isUser ? (
                     <div className="break-words">{message.content}</div>
@@ -28,16 +27,16 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
                         <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={{
-                                code({ node, inline, className, children, ...props }) {
+                                code({ inline, className, children, ...props }) {
                                     const match = /language-(\w+)/.exec(className || '');
                                     return !inline && match ? (
                                         <div className="max-w-full overflow-x-auto">
                                             <SyntaxHighlighter
-                                                style={oneDark}
                                                 language={match[1]}
                                                 PreTag="div"
                                                 className="rounded-md"
                                                 {...props}
+                                                style={oneDark}
                                             >
                                                 {String(children).replace(/\n$/, '')}
                                             </SyntaxHighlighter>
@@ -68,4 +67,4 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
     );
 };
 
-export default MessageBubble; 
+export default MessageBubble;
