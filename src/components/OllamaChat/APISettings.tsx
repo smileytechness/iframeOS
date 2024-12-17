@@ -101,27 +101,46 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
             const pageProtocol = window.location.protocol;
 
             if (pageProtocol === 'https:' && serverUrl.protocol === 'http:') {
-                setStatus(prev => ({
-                    ...prev,
-                    http: 'error',
-                    lan: 'skipped',
-                    cors: 'skipped',
-                    errors: [{
-                        type: 'mixed_content',
-                        message: 'Mixed Content Error: Cannot access HTTP server from HTTPS page',
-                        details: 'Add the server URL to Chrome flags: chrome://flags/#unsafely-treat-insecure-origin-as-secure'
-                    }]
-                }));
-                setIsChecking(false);
-                onStatusUpdate('error');
-                return;
+                // Try a test request even with mixed content
+                try {
+                    const response = await fetch(settings.serverUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            model: settings.model,
+                            messages: [{ role: "user", content: "test" }],
+                            stream: false
+                        })
+                    });
+
+                    if (response.ok) {
+                        setStatus(prev => ({ ...prev, http: 'success' }));
+                        onStatusUpdate('success');
+                    } else {
+                        throw new Error('Server returned error status');
+                    }
+                } catch (error) {
+                    setStatus(prev => ({
+                        ...prev,
+                        http: 'error',
+                        lan: 'skipped',
+                        cors: 'skipped',
+                        errors: [{
+                            type: 'mixed_content',
+                            message: 'Mixed Content Error: Cannot access HTTP server from HTTPS page',
+                            details: 'Add the server URL to Chrome flags: chrome://flags/#unsafely-treat-insecure-origin-as-secure and restart Chrome'
+                        }]
+                    }));
+                    setIsChecking(false);
+                    onStatusUpdate('error');
+                    return;
+                }
+            } else {
+                setStatus(prev => ({ ...prev, http: 'success' }));
+                onStatusUpdate('success');
             }
 
-            setStatus(prev => ({ ...prev, http: 'success' }));
-            onStatusUpdate('success');
-
             // 2. LAN Check
-            // Use the original server URL path for the check
             try {
                 const response = await fetch(settings.serverUrl, {
                     method: 'POST',
