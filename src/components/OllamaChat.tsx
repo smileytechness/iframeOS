@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import APISettingsPanel from './OllamaChat/APISettings';
 import { APISettings } from '../types/api';
 import { loadSavedConfigs } from '../utils/configStorage';
-import { FiSend, FiSettings, FiMinus, FiX, FiArrowDown } from 'react-icons/fi';
+import { FiMinus, FiX, FiArrowDown } from 'react-icons/fi';
 import MessageBubble from './OllamaChat/MessageBubble';
 import StatusIndicator from './OllamaChat/StatusIndicator';
 

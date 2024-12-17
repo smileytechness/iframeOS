@@ -1,5 +1,5 @@
+import { APISettings, parameterDescriptions, serverStatusDescriptions } from '../../types/api';
 import React, { useState } from 'react';
-import { APISettings, ServerStatus, parameterDescriptions, serverStatusDescriptions } from '../../types/api';
 import { Tooltip } from '../ui/Tooltip';
 import { FiInfo, FiX } from 'react-icons/fi';
 import { SavedConfigs } from './SavedConfigs';

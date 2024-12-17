@@ -1,4 +1,6 @@
 // src/utils/configStorage.ts
+import { APISettings } from '../types/api';
+
 const STORAGE_KEY = 'ollama_saved_configs';
 
 export const loadSavedConfigs = (): APISettings[] => {
