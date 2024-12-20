@@ -2,6 +2,7 @@ export interface APISettings {
     id?: string;
     name?: string;
     serverUrl: string;
+    apiKey: string;
     model: string;
     temperature: number;
     maxTokens: number;
@@ -46,13 +47,14 @@ export const parameterDescriptions = {
     topP: "Controls diversity via nucleus sampling. Lower values (0.1) make output more focused.",
     frequencyPenalty: "Reduces repetition by lowering probability of words that have already appeared.",
     presencePenalty: "Encourages new topics by increasing probability of less-used words.",
-    model: "The name of the model to use for generating responses."
+    model: "The name of the model to use for generating responses.",
+    apiKey: "Enter your API key for cloud provider (OpenAI, Anthropic, Google, Groq etc."
 } as const;
 
 export const serverStatusDescriptions = {
-    http: `**BROWSER ISSUE**
+    http: `**BROWSER ERROR**
 
-When loading a secure webpage (HTTPS) that tries to access a non-secure server (HTTP), browsers block this as a security risk. This is called a Mixed Content error.
+MIXED CONTENT error. When loading a secure webpage (HTTPS) that tries to access a non-secure server (HTTP), browsers block this as a security risk. This is called a Mixed Content error.
 
 **What you'll see:**
 - 🟢 Green: Server URL is secure or website is running locally
@@ -67,7 +69,7 @@ Note: This check happens instantly as it's a browser-level security check.`,
     
     lan: `**NETWORK ISSUE**
 
-This checks if your computer can reach the Ollama server on your network. Common when trying to access Ollama running on another machine.
+No response from server. This checks if your computer can reach the Ollama server on your network. Common when trying to access Ollama running on another machine.
 
 **What you'll see:**
 - 🟢 Green: Server is accessible
@@ -96,5 +98,5 @@ CORS (Cross-Origin Resource Sharing) is a server security feature that controls 
 
 **How to fix:**
 Configure your Ollama server to allow this website:
-- Set \`OLLAMA_ORIGINS\` to include this website's URL`
+- Set \`OLLAMA_ORIGINS\` to include this website's URL (https://iframeos.com)`
 } as const;

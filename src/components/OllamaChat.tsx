@@ -29,7 +29,7 @@ const OllamaChat: React.FC<OllamaChatProps> = ({ onClose, onMinimize }) => {
         return saved[0] || {
             serverUrl: 'http://localhost:11434/v1/chat/completions',
             model: 'qwen2.5',
-            temperature: 0.7,
+            temperature: 1.0,
             maxTokens: 150,
             topP: 0.9,
             frequencyPenalty: 0,
@@ -109,7 +109,9 @@ const OllamaChat: React.FC<OllamaChatProps> = ({ onClose, onMinimize }) => {
             // Use current apiSettings for the API call
             const response = await fetch(apiSettings.serverUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                        'Authorization':`Bearer ${apiSettings.apiKey}`
+                 },
                 body: JSON.stringify({
                     model: apiSettings.model,
                     messages: [{ role: "user", content: userMessage }],
@@ -123,7 +125,7 @@ const OllamaChat: React.FC<OllamaChatProps> = ({ onClose, onMinimize }) => {
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`Error! status: ${response.status}`);
             }
 
             const reader = response.body?.getReader();

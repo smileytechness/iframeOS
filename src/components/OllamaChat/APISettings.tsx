@@ -102,17 +102,21 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
 
             if (pageProtocol === 'https:' && serverUrl.protocol === 'http:') {
                 // Try a test request even with mixed content
+                //curl https://api.groq.com/openai/v1/models -H "Authorization: Bearer $GROQ_API_KEY"
                 try {
                     const response = await fetch(settings.serverUrl, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey}` },
                         body: JSON.stringify({
                             model: settings.model,
-                            messages: [{ role: "user", content: "test" }],
-                            stream: false
+                            messages: [{ role: "user", content: "write back 'We're connected'" }],
+                            stream: true
                         })
                     });
-
+                        //MIXED CONTENT - Look for response log in consoole for 'Mixed Content' only. Otherwise, go to next check (LAN)
+                        //LAN -Look for response lon in console for 'err_no-response' or 'ERR_ADDRESS_UNREACHABLE'
+                        //CORS - Look for CORS error
+                        //API key fail - Look for 401 (unauthorized)
                     if (response.ok) {
                         setStatus(prev => ({ ...prev, http: 'success' }));
                         onStatusUpdate('success');
@@ -144,16 +148,16 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
             try {
                 const response = await fetch(settings.serverUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey}` },
                     body: JSON.stringify({
                         model: settings.model,
-                        messages: [{ role: "user", content: "test" }],
+                        messages: [{ role: "user", content: "write back 'We're connected'" }],
                         stream: false
                     })
                 });
 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`Error! status: ${response.status}`);
                 }
 
                 setStatus(prev => ({ ...prev, lan: 'success' }));
@@ -297,6 +301,23 @@ const APISettingsPanel: React.FC<APISettingsPanelProps> = ({
                         <p className="mt-1 text-xs text-gray-500">
                             Example: http://localhost:11434/v1/chat/completions
                         </p>
+                    </div>
+
+                    {/* API Key */}
+                                        <div>
+                                        <label className="block text-sm font-medium mb-1 flex items-center">
+                            <span>API Key</span>
+                            <InfoIcon content={parameterDescriptions.apiKey} />
+                        </label>
+                        <input
+                            type="text"
+                            value={settings.apiKey}
+                            onChange={(e) => onSettingsChange({
+                                ...settings,
+                                apiKey: e.target.value
+                            })}
+                            className="w-full p-2 border rounded bg-white dark:bg-gray-800"
+                        />
                     </div>
 
                     {/* Model */}
