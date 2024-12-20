@@ -56,19 +56,19 @@ const OllamaChat: React.FC<OllamaChatProps> = ({ onClose, onMinimize }) => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Handle scroll events
-    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-        const element = e.currentTarget;
-        const isAtBottom = Math.abs(
-            element.scrollHeight - element.clientHeight - element.scrollTop
-        ) < 50;
+    // // Handle scroll events
+    // const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    //     const element = e.currentTarget;
+    //     const isAtBottom = Math.abs(
+    //         element.scrollHeight - element.clientHeight - element.scrollTop
+    //     ) < 50;
 
-        setUserHasScrolled(!isAtBottom);
-        // Only update autoScroll if user manually scrolls
-        if (!isAtBottom && autoScroll) {
-            setAutoScroll(false);
-        }
-    };
+    //     setUserHasScrolled(!isAtBottom);
+    //     // Only update autoScroll if user manually scrolls
+    //     if (!isAtBottom && autoScroll) {
+    //         setAutoScroll(false);
+    //     }
+    // };
 
     // Update scroll behavior when messages change
     useEffect(() => {
