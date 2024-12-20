@@ -109,9 +109,10 @@ const OllamaChat: React.FC<OllamaChatProps> = ({ onClose, onMinimize }) => {
             // Use current apiSettings for the API call
             const response = await fetch(apiSettings.serverUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json',
-                        'Authorization':`Bearer ${apiSettings.apiKey}`
-                 },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiSettings.apiKey}`
+                },
                 body: JSON.stringify({
                     model: apiSettings.model,
                     messages: [{ role: "user", content: userMessage }],
@@ -132,7 +133,7 @@ const OllamaChat: React.FC<OllamaChatProps> = ({ onClose, onMinimize }) => {
             if (!reader) throw new Error('No reader available');
 
             let currentMessage = '';
-            
+
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
@@ -144,7 +145,7 @@ const OllamaChat: React.FC<OllamaChatProps> = ({ onClose, onMinimize }) => {
                 for (const line of lines) {
                     if (line.trim() === '') continue;
                     if (line === 'data: [DONE]') continue;
-                    
+
                     try {
                         const parsed = JSON.parse(line.replace('data: ', ''));
                         if (parsed.choices?.[0]?.delta?.content) {
@@ -152,7 +153,7 @@ const OllamaChat: React.FC<OllamaChatProps> = ({ onClose, onMinimize }) => {
                             setMessages(prev => {
                                 const newMessages = [...prev];
                                 const lastMessage = newMessages[newMessages.length - 1];
-                                
+
                                 if (!lastMessage || lastMessage.isUser) {
                                     newMessages.push({ content: currentMessage, isUser: false });
                                 } else {
@@ -161,7 +162,7 @@ const OllamaChat: React.FC<OllamaChatProps> = ({ onClose, onMinimize }) => {
                                         isUser: false
                                     };
                                 }
-                                
+
                                 return newMessages;
                             });
                         }
@@ -191,9 +192,9 @@ const OllamaChat: React.FC<OllamaChatProps> = ({ onClose, onMinimize }) => {
                 <div className="flex items-center justify-between p-4">
                     <div className="flex items-center space-x-4">
                         <h1 className="text-xl font-semibold">AI Chat</h1>
-                        
+
                         {/* Settings Status - Show in both mobile and desktop */}
-                        <button 
+                        <button
                             onClick={() => setIsSettingsExpanded(true)}
                             className="flex items-center space-x-2 px-3 py-1.5 text-sm 
                                      bg-gray-100 dark:bg-gray-800 rounded-full"
@@ -204,7 +205,7 @@ const OllamaChat: React.FC<OllamaChatProps> = ({ onClose, onMinimize }) => {
                             <StatusIndicator status={serverStatus} />
                         </button>
                     </div>
-                    
+
                     {/* Window Controls - Ensure they're always on top */}
                     <div className="flex items-center space-x-2 z-50">
                         <button
@@ -228,10 +229,10 @@ const OllamaChat: React.FC<OllamaChatProps> = ({ onClose, onMinimize }) => {
                 {/* Chat Container */}
                 <div className={`flex-1 flex flex-col transition-all duration-300
                                ${isSettingsExpanded && window.innerWidth >= 768 ? 'mr-96' : ''}`}>
-                    
+
                     {/* Messages Area */}
                     <div className="flex-1 relative">
-                        <div 
+                        <div
                             ref={messagesContainerRef}
                             onScroll={handleScroll}
                             className="absolute inset-0 overflow-y-auto p-4"
@@ -283,7 +284,7 @@ const OllamaChat: React.FC<OllamaChatProps> = ({ onClose, onMinimize }) => {
                 </div>
 
                 {/* Settings Panel */}
-                <div className={`absolute top-0 bottom-0 right-0 w-96 bg-white dark:bg-gray-800 
+                <div className={`absolute top-0 bottom-0 right-0 w-full md:w-96 bg-white dark:bg-gray-800 
                                shadow-xl transition-transform duration-300 transform
                                ${isSettingsExpanded ? 'translate-x-0' : 'translate-x-full'}
                                border-l border-gray-200 dark:border-gray-700`}>
